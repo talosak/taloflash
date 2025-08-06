@@ -12,7 +12,9 @@
 
 My web application contains 3 original models (not counting User) on the backend, which all have at least 6 unique fields each. These fields are of many different types, which are discussed more at length in the "Models" section.
 
-JavaScript is used in 3 seperate files: "index.js", "flashset.js", "study.js", they are responsible for asynchronously editing or deleting flashcards, any popups in the flashset page, and handling the functionality of the study page.
+JavaScript is used in 3 seperate files: "index.js", "flashset.js", "study.js", they are responsible for asynchronously(that means "without needing to reload the page") editing or deleting flashcards, any popups in the flashset page, and handling the functionality of the study page.
+
+Bootstrap's classes are utilized to create responsive pages that adapt to the screen's size, for example the navbar automatically turns into a toggle on smaller screens.
 
 My project's distinctiveness and complexity in comparison to the other weeks' projects comes from the fact, that they didn't do anything remotely close to creating, collaborating, and especially studying flashcards. In addition, there are settings which have to be kept in check at all times, such as the color theme, the timer, or the display order.
 
@@ -149,4 +151,68 @@ class Settings(models.Model):
 ```
 
 ## Features
+
+There are ten things that i would consider features in taloflash, some more complicated than others. In order of development:
+* Account system
+* Create flashset
+* All sets
+* Create flashcard
+* Set page
+* Like and save sets
+* Saved sets page
+* Search page
+* Settings
+* Study
+
+### 1. Account system
+This is a pretty standard Django account system that includes register, log in, log out. It only requires a username, and a password.
+
+Relevant urls:
+```Python
+path("login", views.login_view, name="login"),
+path("logout", views.logout_view, name="logout"),
+path("register", views.register_view, name="register"),
+```
+
+### 2. Create flashset
+Here logged in users can create a flashset by inputting the set's name and an optional description. After creation they automatically get assigned as the creator and get added to editors.
+
+Relevant url:
+```Python
+path("createSet", views.createSet, name="createSet"),
+```
+
+### 3. All sets (index)
+This is the index page of the web app. It uses Django's templates to display every existing flashset. 
+
+Here i can also talk about layout.html, off of which every other template is based. It has a navbar which dynamically turns into a clickable button on smaller screens thanks to Bootstrap's breakpoints. It is also set up to display Django's message framework, in order to quickly and efficiently convey information to the user.
+
+Relevant url:
+```Python
+path("", views.index, name="index"),
+```
+
+### 4. Create flashcard
+After creating a flashset, or being added to one as an editor, users can create a flashcard for that set. To do this they must input text for the front side, back side, and an optional image URL.
+
+Relevant url:
+```Python
+path("sets/<int:set_id>/createFlashcard", views.createFlashcard, name="createFlashcard"),
+```
+
+### 5. Set page
+When the user clicks on a set, they are brought to a set page. Here they can see all the flashcards in the given set (rendered with django templates), and go to the study page.
+
+If the user is both logged in and an editor of the set, then they can go to the create flashcard page. They can also edit or delete existing flashcards, which happens asynchronously through flashset.js and the alterFlashcard API path.
+
+Finally, if the user is the creator of the set, they can delete the whole thing, along with all the flashcards inside. The creator can also add or remove other people from editors, which also happens asynchronously.
+
+Relevant urls:
+```Python
+path("sets/<int:set_id>/alterFlashcard/<int:flashcard_id>", views.alterFlashcard, name="alterFlashcard"),
+path("sets/<int:set_id>", views.set_view, name="set"),
+```
+
+
+
 

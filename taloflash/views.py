@@ -83,15 +83,17 @@ def createFlashcard(request, set_id):
         # Ensure both sides aren't blank
         if front == "" or back == "":
             messages.error(request, "Both sides of the flashcard must be inputted")
-            return render(request, "taloflash/createFlashcard.html", {
-                "flashset": flashset,
-            })
+            return redirect("createFlashcard", set_id=set_id)
         
         flashcard = Flashcard(creator=creator, front=front, back=back, imageURL=imageURL, flashSet_id=flashset.id)
         flashcard.save()
         messages.success(request, "Flashcard created successfully")
         return redirect("set", set_id=set_id)
     else:
+        # Check if user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "Not logged in")
+            return redirect("index")
         flashset = FlashSet.objects.annotate(likeCount=Count("likers"), flashcardCount=Count("flashcards")).get(pk=set_id)
         return render(request, "taloflash/createFlashcard.html", {
             "flashset": flashset,
@@ -106,7 +108,7 @@ def createSet(request):
         # Ensure name isn't blank
         if name == "":
             messages.error(request, "FlashSet's name is missing")
-            return render(request, "taloflash/createSet.html")
+            return redirect("createSet")
 
         # Create the flashset
         flashset = FlashSet(creator=creator, name=name, description=description)
@@ -116,6 +118,10 @@ def createSet(request):
         messages.success(request, "Set created successfully")
         return redirect("index")
     else:
+        # Check if user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "Not logged in")
+            return redirect("index")
         return render(request, "taloflash/createSet.html")
 
 def login_view(request):
@@ -132,7 +138,7 @@ def login_view(request):
             return redirect("index")
         else:
             messages.error(request, "Invalid username or password")
-            return render(request, "taloflash/login.html")
+            return redirect("login")
     
     elif request.user.is_authenticated:
         # User is already logged in
@@ -144,7 +150,7 @@ def login_view(request):
 def logout_view(request):
     # Check if user is authenticated
     if not request.user.is_authenticated:
-        messages.success(request, "Not logged in")
+        messages.error(request, "Not logged in")
         return redirect("index")
     
     # Log user out
@@ -161,7 +167,7 @@ def register_view(request):
         # Ensure password matches confirmation
         if password != confirmation:
             messages.error(request, "Password must match confirmation")
-            return render(request, "taloflash/register.html")
+            return redirect("register")
         
         # Ensure username is unique
         try:
@@ -169,7 +175,7 @@ def register_view(request):
             user.save()
         except IntegrityError:
             messages.error(request, "Username already taken")
-            return render(request, "network/register.html")
+            return redirect("register")
         
         # Create settings
         settings = Settings(user=user)
@@ -190,7 +196,7 @@ def register_view(request):
 def saved(request):
     # Check if user is authenticated
     if not request.user.is_authenticated:
-        messages.success(request, "Not logged in")
+        messages.error(request, "Not logged in")
         return redirect("index")
     
     # Order the flashsets while checking if user is logged in
@@ -203,7 +209,7 @@ def saved(request):
     elif request.user.settings.flashSetDisplayOrder == "creator":
         order = "-creator__username"
     else:
-        messages.success(request, "Not logged in")
+        messages.error(request, "Not logged in")
         return redirect("index")
         
     flashsets = FlashSet.objects.filter(savers=request.user).annotate(likeCount=Count("likers", distinct=True), flashcardCount=Count("flashcards", distinct=True)).order_by(order).all()
@@ -307,6 +313,10 @@ def settings(request):
         messages.success(request, "Settings updated successfully")
         return redirect("index")
     else:
+        # Check if user is authenticated
+        if not request.user.is_authenticated:
+            messages.error(request, "Not logged in")
+            return redirect("index")
         return render(request, "taloflash/settings.html", {
             "settings": settings,
         })
