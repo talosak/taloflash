@@ -14,10 +14,12 @@ My web application contains 3 original models (not counting User) on the backend
 
 JavaScript is used in 3 seperate files: "index.js", "flashset.js", "study.js", they are responsible for asynchronously editing or deleting flashcards, any popups in the flashset page, and handling the functionality of the study page.
 
-My project's distinctiveness and complexity in comparison to the other weeks' projects comes from the fact, that they didn't do anything remotely close to creating, collaborating, and especially studying flashcards. In addition, there also settings, which also have to be kept in check at all times, such as the color theme, the timer, or the display order.
+My project's distinctiveness and complexity in comparison to the other weeks' projects comes from the fact, that they didn't do anything remotely close to creating, collaborating, and especially studying flashcards. In addition, there are settings which have to be kept in check at all times, such as the color theme, the timer, or the display order.
+
+Overall, this took me about 2 months of on-and-off work to complete.
 
 ## Getting Started
-#### An east step by step guide on how to locally host this web application only for yourself, obviously this isn't the only way to do it.
+#### An easy step by step guide on how to locally host this web application only for yourself, obviously this isn't the only way to do it.
 1. Download [python and pip](https://www.python.org/)
 2. Download [VSCode](https://code.visualstudio.com/)
 3. Download [Git](https://git-scm.com/)
@@ -31,7 +33,120 @@ My project's distinctiveness and complexity in comparison to the other weeks' pr
     ```bash
     git clone https://github.com/talosak/taloflash.git
     ```
-8. Run the web application
+8. Make migrations and migrate
+    ```bash 
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
+9. Run the web application
     ```bash 
     python manage.py runserver
     ```
+
+# Documentation
+### This is the part of the README where i go into detail about all the files and features.
+
+## Models
+
+There are three original models of my creation, and Django's AbstractUser model.
+
+### 1. FlashSet
+This model handles the flashsets that users can create:
+* creator - ForeignKey to the User that created the flashset
+* editors - ManyToManyField of Users that are allowed to edit the flashcards inside the set
+* name - CharField that holds the name of the flashset
+* description - TextField that holds the description of the flashset
+* timestamp - DateTimeField that holds the date and time of the flashset's creation
+* likers - ManyToManyField of Users that have liked this set
+* savers - ManyToManyField of Users that have saved this set
+
+```Python
+class FlashSet(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="createdSets")
+    editors = models.ManyToManyField(User, related_name="editableSets")
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    likers = models.ManyToManyField(User, related_name="likedSets")
+    savers = models.ManyToManyField(User, related_name="savedSets")
+```
+
+### 2. Flashcard
+This model handles the flashcards that users can create inside of flashsets:
+* flashSet - ForeignKey to the FlashSet to which this Flashcard belongs
+* front - CharField of text on the front side of this flashcard
+* back - CharField of text on the back side of this flashcard
+* imageURL - URLField of the flashcard's image's URL
+* timestamp - DateTimeField that holds the date and time of the flashcard's creation
+* creator - ForeignKey to the User who created this flashcard
+* serialize() function - used to serialize the data about the flashcard so it can be used in study.js
+
+```Python
+class Flashcard(models.Model):
+    flashSet = models.ForeignKey(FlashSet, on_delete=models.CASCADE, related_name="flashcards")
+    front = models.CharField(max_length=255)
+    back = models.CharField(max_length=255)
+    imageURL = models.URLField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="createdFlashcards")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "flashset": self.flashSet.id,
+            "front": self.front,
+            "back": self.back,
+            "imageURL": self.imageURL,
+            "timestamp": self.timestamp,
+            "creator": self.creator.id,
+        }
+```
+
+### 3. Settings
+This model holds all the settings a user can configure:
+* user - ForeignKey to the User to who these settings belong
+* theme - CharField with the user's selected color theme (dark or light)
+* flashSetDisplayOrder - CharField with the order in which flashsets are displayed (most likes, name(alphabetical), newest, creator's name)
+* flashcardDisplayOrder - CharField with the order in which flashcards are displayed (random, oldest, alphabetical-front, alphabetical-back)
+* flashcardFontSize - IntegerField with the font size (in pixels) to use while studying flashcards
+* showTimer - BooleanField of whether or not to show the timer
+* timeLimit - IntegerField of the amount of time while studying flashcards that needs to pass before something happens
+* timeLimitBehavior - CharField of what should happen after the timeLimit is exceeded (nothing, kick(to set page), restart)
+* postFlipCooldown - FloatField of how long the delay between flipping the flashcard and being able to select an answer, so as to prevent accidental clicks
+* backToForwardMode - BooleanField that inverts all flashcards, so now the user sees the back and has to remember the front
+* hardcoreMode - BooleanField that kicks the user to set page if they get even a single flashcard wrong
+* serialize() function - used to serialize the data about the flashcard so it can be used in javascript files
+
+```Python
+class Settings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="settings")
+    theme = models.CharField(default="dark", choices=[("dark", "Dark"), ("light", "Light")], max_length=63)
+    flashSetDisplayOrder = models.CharField(default="likes", choices=[("likes", "Most liked"), ("name", "Name"), ("newest", "Newest"), ("creator", "Creator's name")], max_length=63)
+    flashcardDisplayOrder = models.CharField(default="oldest", choices=[("random", "Random"), ("oldest", "Oldest"), ("alphabeticalFront", "Alphabetical - front side)"), ("alphabeticalBack", "Alphabetical - back side")], max_length=63)
+    flashcardFontSize = models.IntegerField(default=40)
+    showTimer = models.BooleanField(default=False)
+    timeLimit = models.IntegerField(default=0)
+    timeLimitBehavior = models.CharField(default="nothing", choices=[("nothing", "Nothing"), ("kick", "Kick"), ("restart", "Restart")], max_length=63)
+    postFlipCooldown = models.FloatField(default=0)
+    backToForwardMode = models.BooleanField(default=False)
+    hardcoreMode = models.BooleanField(default=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user": self.user.id,
+            "theme": self.theme,
+            "flashSetDisplayOrder": self.flashSetDisplayOrder,
+            "flashcardDisplayOrder": self.flashcardDisplayOrder,
+            "flashcardFontSize": self.flashcardFontSize,
+            "showTimer": self.showTimer,
+            "timeLimit": self.timeLimit,
+            "timeLimitBehavior": self.timeLimitBehavior,
+            "postFlipCooldown": self.postFlipCooldown,
+            "backToForwardMode": self.backToForwardMode,
+            "hardcoreMode": self.hardcoreMode,
+        }
+```
+
+## Features
+

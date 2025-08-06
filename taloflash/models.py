@@ -24,7 +24,6 @@ class Flashcard(models.Model):
     imageURL = models.URLField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="createdFlashcards")
-    learners = models.ManyToManyField(User, related_name="learnedFlashcards")
 
     def serialize(self):
         return {
@@ -35,7 +34,6 @@ class Flashcard(models.Model):
             "imageURL": self.imageURL,
             "timestamp": self.timestamp,
             "creator": self.creator.id,
-            "learners": [learner.id for learner in self.learners.all()]
         }
 
 class Settings(models.Model):
