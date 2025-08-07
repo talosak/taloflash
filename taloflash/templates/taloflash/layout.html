@@ -18,7 +18,7 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapsible"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarCollapsible">
                     <ul class="me-auto navbar-nav dynamic-blue-text">
-                        <li class="nav-item"><span class="nav-link pe-none dynamic-blue-text"><strong>Logged in as: {{request.user.username}}</strong></span></li>
+                        <li class="nav-item"><span class="nav-link pe-none dynamic-blue-text"><strong>{% if user.is_authenticated %}Logged in as: {{request.user.username}}{% else %}Not logged in{% endif %}</strong></span></li>
                         <li class="nav-item"><a class="nav-link blue-nav-link" href="{% url 'index' %}">All Sets</a></li>
                         {% if user.is_authenticated %}
                             <li class="nav-item"><a class="nav-link blue-nav-link" href="{% url 'createSet' %}">Create Set</a></li>
