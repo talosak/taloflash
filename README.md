@@ -1,6 +1,6 @@
 # Taloflash
 
-#### Video demo: TBA
+#### Video demo: https://youtu.be/rr_g95xija0
 #### Description: Taloflash is a web application that allows users to create, share and study flashcards.
 #### Full commit history can be found [here](https://github.com/talosak/CS50W/commits/main/)
 
