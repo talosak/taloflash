@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Databases (local/dev only)
+db.sqlite3
+db_data/
+
+# Secrets
+.env
+
+# Static/media generated files
+staticfiles/
+media/
+
+# OS / editor junk
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/

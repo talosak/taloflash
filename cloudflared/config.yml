@@ -1,0 +1,7 @@
+tunnel: taloflash
+credentials-file: /etc/cloudflared/taloflash.json
+
+ingress:
+  - hostname: westnode.eu
+    service: http://localhost:80
+  - service: http_status:404

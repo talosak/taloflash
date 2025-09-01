@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Databases
+db.sqlite3
+db_data/
+
+# Secrets
+.env
+
+# Local dev static/media (if you collect them at runtime or in Dockerfile)
+staticfiles/
+media/
+
+# Docker and deployment configs (run as separate services, not in image)
+docker-compose*.yml
+nginx/
+cloudflared/
+
+# OS / editor junk
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/

@@ -1,0 +1,23 @@
+{% extends "taloflash/layout.html" %}
+
+{% block title %} Create Set {% endblock %}
+
+{% block script %}{% endblock %}
+
+{% block body %}
+    <div class="container-lg">
+        <h2>New Set</h2>
+        <form method="post" action="{% url 'createSet' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label" for="createSetNameForm">Set Name:</label>
+                <input type="text" name="name" class="form-control input-blue" id="createSetNameForm" autocomplete="off">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="createSetDescriptionForm">Set Description: (optional)</label>
+                <textarea  name="description" class="form-control input-blue" id="createSetDescriptionForm" style="width:100%; height:150px;"></textarea>
+            </div>
+            <button type="submit" class="btn btn-custom-blue">Create Set</button>
+        </form>
+    </div>
+{% endblock %}
