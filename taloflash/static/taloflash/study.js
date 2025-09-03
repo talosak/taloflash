@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: {
             'X-CSRFToken': Cookies.get('csrftoken')
         },
-        credentials: 'same-origin',
+        credentials: 'include',
     })
     .then(response => response.json())
     .then(responseFlashcards => {

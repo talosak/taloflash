@@ -10,6 +10,7 @@
 
 {% block body %}
     {{ user.settings.serialize|json_script:"settings-data" }}
+    {% csrf_token %}
     <div class="container-lg">
         <div id="flashcardFront" class="flashcard {% if user.settings.backToForwardMode %} d-none {% endif %}" style="height:80vh">
             <div class="row text-center mt-3 mb-4"><span style="font-size:{{user.settings.flashcardFontSize}}px;" id="studyFlashcardFrontText">Front placeholder</span></div>    
