@@ -12,11 +12,6 @@
     --alert-danger-border-color: #cc3120;
     --alert-danger-text-color: #a23120;
     --alert-danger-highlight: #ff9999;
-    font-size: 20px;
-}
-
-main {
-    font-size: 26px;
 }
 
 /* Light color theme */
@@ -36,6 +31,7 @@ main {
 
 html, body {
     overflow-x: hidden;
+    font-size: clamp(14px, 2vw, 20px);
 }
 
 .dynamic-blue-text {
@@ -55,7 +51,7 @@ html, body {
 }
 
 .btn-custom-blue {
-    font-size: 26px;
+    font-size: 1.5rem;
     color: var(--dynamic-blue);
     border: 1px var(--custom-blue) solid;
     background-color: var(--dynamic-blue-bg);
@@ -78,30 +74,30 @@ html, body {
     background-color: var(--alert-success-bg);
     color: var(--alert-success-text-color);
     border-color: var(--alert-success-border-color);
-    font-size: 30px;
+    font-size: 1.5rem;
 }
 
 .alert-error {
     background-color: var(--alert-danger-bg);
     color: var(--alert-danger-text-color);
     border-color: var(--alert-danger-border-color);
-    font-size: 30px;
+    font-size: 1.5rem;
 }
 
 .flashset {
     border: 2px solid var(--dynamic-blue-muted);
     background-color: var(--dynamic-blue-bg);
-    border-radius: 25px;
+    border-radius: 1.25rem;
 }
 
 .flashcard {
     border: 2px solid var(--dynamic-blue-muted);
     background-color: var(--dynamic-blue-bg);
-    border-radius: 25px;
+    border-radius: 1.25rem;
 }
 
 .btn-custom-danger {
-    font-size: 26px;
+    font-size: 1.5rem;
     color: var(--alert-danger-text-color);
     border: 1px var(--alert-danger-border-color) solid;
     background-color: var(--alert-danger-bg);
@@ -112,6 +108,18 @@ html, body {
     background-color: var(--alert-danger-border-color);
 }
 
-.fontSize-22px {
-    font-size: 22px;
+.font-size-study {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+.dynamic-font-size-big {
+    font-size: 1.75rem;
+}
+
+.dynamic-font-size-medium {
+    font-size: 1.5rem;
+}
+
+.dynamic-font-size-small {
+    font-size: 1.25rem;
 }

@@ -13,7 +13,7 @@
     {% csrf_token %}
     <div class="container-lg">
         <div id="flashcardFront" class="flashcard {% if user.settings.backToForwardMode %} d-none {% endif %}" style="height:80vh">
-            <div class="row text-center mt-3 mb-4"><span style="font-size:{{user.settings.flashcardFontSize}}px;" id="studyFlashcardFrontText">Front placeholder</span></div>    
+            <div class="row text-center mt-3 mb-4"><span class="font-size-study" id="studyFlashcardFrontText">Front placeholder</span></div>    
             <div class="row justify-content-center mb-5"><img class="d-block object-fit-contain" style="max-height:50vh; max-width:45vw;" id="studyFlashcardFrontImageURL" src="https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"></div>
             <div class="row justify-content-center mt-5">
                 {% if user.settings.backToForwardMode %}
