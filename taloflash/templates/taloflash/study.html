@@ -25,7 +25,7 @@
             </div>
         </div>
         <div id="flashcardBack" class="flashcard {% if not user.settings.backToForwardMode %} d-none {% endif %}" style="height:80vh">
-            <div class="row text-center mt-3 mb-4"><span style="font-size:{{user.settings.flashcardFontSize}}px;" id="studyFlashcardBackText">Back placeholder</span></div>    
+            <div class="row text-center mt-3 mb-4"><span class="font-size-study" id="studyFlashcardBackText">Back placeholder</span></div>    
             <div class="row justify-content-center"><img style="display:block; object-fit:contain; max-height:50vh; max-width:45vw;" id="studyFlashcardBackImageURL" src="https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"></div>
             <div class="row justify-content-center mt-5">
                 {% if user.settings.backToForwardMode %}
@@ -37,9 +37,9 @@
             </div>
         </div>
         <div id="studyResults" class="flashcard d-none" style="height:80vh">
-            <div class="row text-center mt-3 mb-4"><strong><span style="color:limegreen; font-size:4vw;">Flashset completed :3</span></strong></div>
+            <div class="row text-center mt-3 mb-4 font-size-study"><strong><span style="color:limegreen;">Flashset completed :3</span></strong></div>
             <div class="row justify-content-center"><img style="display:block; object-fit:contain; max-height:50vh; max-width:45vw;" id="studyFlashcardBackImageURL" src="https://static.wikia.nocookie.net/silly-cat/images/1/19/Thumbs_Up.png/revision/latest?cb=20231201204731"></div>
-            <div class="row text-center mt-3 mb-4"><strong><span style="font-size:2vw;" id="studyAccuracy">Accuracy: 0/0 (~0%)</span></strong></div>
+            <div class="row text-center mt-3 mb-4 dynamic-font-size-big"><strong><span id="studyAccuracy">Accuracy: 0/0 (~0%)</span></strong></div>
         </div>
         <div class="mt-3 d-flex justify-content-between">
             {% if user.is_authenticated and user.settings.showTimer %}

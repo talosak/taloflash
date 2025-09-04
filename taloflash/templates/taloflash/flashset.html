@@ -113,10 +113,10 @@
                     </div>
                     {% if user in flashset.editors.all %}
                         <div class="col-auto ms-auto me-4 d-flex flex-column">
-                            <div class="row align-items-start justify-content-end mb-auto mt-3">
+                            <div class="row align-items-start justify-content-end mb-auto mt-2">
                                 <button type="button" class="btn btn-primary dynamic-font-size-medium" onclick="displayEditFlashcard({{flashcard.id}}, {{flashset.id}})">Edit</button>
                             </div>
-                            <div class="row align-items-end justify-content-end mb-3 mt-2">
+                            <div class="row align-items-end justify-content-end mb-2 mt-3">
                                 <button type="button" class="btn btn-custom-danger" onclick="deleteFlashcard({{flashcard.id}}, {{flashset.id}})">Delete</button>
                             </div>
                         </div>
