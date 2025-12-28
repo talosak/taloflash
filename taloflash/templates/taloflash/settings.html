@@ -1,0 +1,93 @@
+{% extends "taloflash/layout.html" %}
+
+{% block title %} Settings {% endblock %}
+
+{% block script %}{% endblock %}
+
+{% block body %}
+    <div class="container-lg">
+        <form method="post" action="{% url 'settings' %}">
+            {% csrf_token %}
+            <div class="mb-5" id="settingsThemeForm">
+                <h3>Theme:</h3>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="theme" value="dark" id="settingsDarkTheme"{% if settings.theme == "dark" %} checked{% endif %}>
+                    <label class="form-check-label" for="settingsDarkTheme">Dark</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="theme" value="light" id="settingsLightTheme"{% if settings.theme == "light" %} checked{% endif %}>
+                    <label class="form-check-label" for="settingsLightTheme">Light</label>
+                </div>
+            </div>
+            <div class="mb-5" id="settingsFlashSetDisplayOrderForm">
+                <h3>Flashset display order:</h3>
+                <div>
+                    <select class="form-select input-blue" name="flashSetDisplayOrder">
+                        <option value="likes"{% if settings.flashSetDisplayOrder == "likes" %} selected{% endif %}>Most liked</option>
+                        <option value="name"{% if settings.flashSetDisplayOrder == "name" %} selected{% endif %}>Name</option>
+                        <option value="newest"{% if settings.flashSetDisplayOrder == "newest" %} selected{% endif %}>Newest</option>
+                        <option value="creator"{% if settings.flashSetDisplayOrder == "creator" %} selected{% endif %}>Creator's username</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-5" id="settingsFlashcardDisplayOrderForm">
+                <h3>Flashcard display order:</h3>
+                <div>
+                    <select class="form-select input-blue" name="flashcardDisplayOrder">
+                        <option value="random"{% if settings.flashcardDisplayOrder == "random" %} selected{% endif %}>Random</option>
+                        <option value="oldest"{% if settings.flashcardDisplayOrder == "oldest" %} selected{% endif %}>Oldest</option>
+                        <option value="alphabeticalFront"{% if settings.flashcardDisplayOrder == "alphabeticalFront" %} selected{% endif %}>Alphabetical - front side</option>
+                        <option value="alphabeticalBack"{% if settings.flashcardDisplayOrder == "alphabeticalBack" %} selected{% endif %}>Alphabetical - back side</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-5" id="settingsFlashcardFontSizeForm">
+                <h3>Flashcard font size (in pixels):</h3>
+                <div>
+                    <input type="number" value="{{settings.flashcardFontSize}}" name="flashcardFontSize" min="0" class="form-control input-blue">
+                </div>
+            </div>
+            <div class="mb-5" id="settingsShowTimerForm">
+                <div class="form-check form-switch">
+                    <input class="form-check-input input-blue" type="checkbox" name="showTimer" role="switch" id="settingsShowTimerCheckbox"{% if settings.showTimer %} checked{% endif %}>
+                    <label class="form-check-label" for="settingsShowTimerCheckbox"><h3>Show timer</h3></label>
+                </div>
+            </div>
+            <div class="mb-5" id="settingsTimeLimitForm">
+                <h3>Time limit (in seconds, '0' to disable):</h3>
+                <div>
+                    <input type="number" value="{{settings.timeLimit}}" name="timeLimit" min="0" class="form-control input-blue">
+                </div>
+            </div>
+            <div class="mb-5" id="settingsTimeLimitBehaviorForm">
+                <h3>Time limit behavior:</h3>
+                <div>
+                    <select class="form-select input-blue" name="timeLimitBehavior">
+                        <option value="nothing"{% if settings.timeLimitBehavior == "nothing" %} selected{% endif %}>Nothing</option>
+                        <option value="kick"{% if settings.timeLimitBehavior == "kick" %} selected{% endif %}>Kick</option>
+                        <option value="restart"{% if settings.timeLimitBehavior == "restart" %} selected{% endif %}>Restart</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-5" id="settingsPostFlipCooldownForm">
+                <h3>Post-flip cooldown (in seconds):</h3>
+                <div>
+                    <input type="number" value="{{settings.postFlipCooldown}}" min="0" step="0.001" name="postFlipCooldown" class="form-control input-blue">
+                </div>
+            </div>
+            <div class="mb-5" id="settingsBackToForwardModeForm">
+                <div class="form-check form-switch">
+                    <input class="form-check-input input-blue" type="checkbox" name="backToForwardMode" role="switch" id="settingsBackToForwardModeCheckbox"{% if settings.backToForwardMode %} checked{% endif %}>
+                    <label class="form-check-label" for="settingsBackToForwardModeCheckbox"><h3>Back to forward mode</h3></label>
+                </div>
+            </div>
+            <div class="mb-5" id="settingsHardcoreModeForm">
+                <div class="form-check form-switch">
+                    <input class="form-check-input input-blue" type="checkbox" name="hardcoreMode" role="switch" id="settingsHardcoreMode"{% if settings.hardcoreMode %} checked{% endif %}>
+                    <label class="form-check-label" for="settingsHardcoreMode"><h3>Hardcore mode</h3></label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-custom-blue">Save</button>
+        </form>
+    </div>
+{% endblock %}

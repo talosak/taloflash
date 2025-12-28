@@ -1,0 +1,27 @@
+{% extends "taloflash/layout.html" %}
+
+{% block title %} Create Set {% endblock %}
+
+{% block script %}{% endblock %}
+
+{% block body %}
+    <div class="container-lg">
+        <h2>Create flashcard</h2>
+        <form method="post" action="{% url 'createFlashcard' set_id=flashset.id%}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label" for="createFlashcardFrontForm">Front side:</label>
+                <input type="text" name="front" class="form-control input-blue" id="createFlashcardFrontForm" autocomplete="off">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="createFlashcardBackForm">Back side:</label>
+                <input type="text" name="back" class="form-control input-blue" id="createFlashcardBackForm" autocomplete="off">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="createFlashcardImageURLForm">Image URL: (optional)</label>
+                <input type="url" name="imageURL" class="form-control input-blue" id="createFlashcardImageURLForm" autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-custom-blue">Create Flashcard</button>
+        </form>
+    </div>
+{% endblock %}

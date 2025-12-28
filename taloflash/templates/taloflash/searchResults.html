@@ -1,0 +1,39 @@
+{% extends "taloflash/layout.html" %}
+{% load static %}
+
+{% block title %} Search Results {% endblock %}
+
+{% block script %}
+    <script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
+    <script defer src="{% static 'taloflash/index.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-lg">
+        <h2>Searched for: "{{searchQuery}}"</h2>
+        {% for set in sets %}
+            <div class="container-fluid my-2 flashset">
+                <a href="{% url 'set' set_id=set.id %}" style="color:currentColor; text-decoration:none;">
+                    <h2><strong>{{set.name}}</strong></h2>
+                    <h5>Creator: {{set.creator.username}}</h5>
+                    <h6>{{set.description}}</h6>
+                    <h6>Flashcards: {{set.flashcardCount}}</h6>
+                    <h6>Likes: <span id="flashsetLikeCount-{{set.id}}">{{set.likeCount}}</span></h6>
+                </a>
+                {% if user not in set.likers.all and user.is_authenticated %}
+                    <button type="button" class="btn btn-primary mb-2 px-2 py-1" id="likeSetButton-{{set.id}}" style="padding:1px;" onclick="likeSet({{set.id}})">Like</button>
+                {% elif user in set.likers.all and user.is_authenticated%}
+                    <button type="button" class="btn btn-secondary mb-2 px-2 py-1" id="likeSetButton-{{set.id}}" style="padding:1px;" onclick="likeSet({{set.id}})">Unlike</button>
+                {% endif %}
+                {% if user not in set.savers.all and user.is_authenticated %}
+                    <button type="button" class="btn btn-primary mb-2 px-2 py-1" id="saveSetButton-{{set.id}}" style="padding:1px;" onclick="saveSet({{set.id}})">Save</button>
+                {% elif user in set.savers.all and user.is_authenticated%}
+                    <button type="button" class="btn btn-secondary mb-2 px-2 py-1" id="saveSetButton-{{set.id}}" style="padding:1px;" onclick="saveSet({{set.id}})">Unsave</button>
+                {% endif %}
+            </div>
+        {% empty %}
+            <br><br>
+            <h2>No results found</h2>
+        {% endfor %}
+    </div>
+{% endblock %}

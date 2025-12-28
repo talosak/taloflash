@@ -1,0 +1,43 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Databases (dev only)
+*.sqlite3
+*.db
+db_data/
+
+# Secrets (dev only)
+.env
+
+# Static/media generated files
+staticfiles/
+staticfiles
+media/
+
+# Docker configs (dev only)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Self hosting configs (dev only)
+cloudflared/
+nginx/
+
+# OS / editor junk
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Logs
+*.log

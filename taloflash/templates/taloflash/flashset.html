@@ -1,0 +1,128 @@
+{% extends "taloflash/layout.html" %}
+{% load static %}
+
+{% block title %} All Sets {% endblock %}
+
+{% block script %}
+    <script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
+    <script defer src="{% static 'taloflash/flashset.js' %}"></script>
+    <script defer src="{% static 'taloflash/index.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-lg">
+        <h2>{{flashset.name}}</h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="me-3">
+                {% if flashcards|length > 0 %}
+                    <a href="{% url 'study' set_id=flashset.id %}" class="btn btn-custom-blue">Study</a>
+                {% endif %}
+            </div>
+            <div>
+                {% if user in flashset.editors.all %}        
+                    <a href="{% url 'createFlashcard' set_id=flashset.id %}" class="btn btn-custom-blue mb-1">Create Flashcard</a>
+                {% endif %}
+                {% if user == flashset.creator %}
+                    <button type="button" class="btn btn-custom-blue mb-1" data-bs-toggle="modal" data-bs-target="#manageEditorsModal">Manage editors</button>
+                    <div class="modal fade" id="manageEditorsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <span class="modal-title dynamic-font-size-medium">Manage editors</span>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row justify-content-center">
+                                        <input type="text" style="width:65%" class="form-control input-blue me-2" id="addEditorInput">
+                                        <button type="button" class="btn btn-custom-blue w-auto dynamic-font-size-small" id="addEditorButton" onclick="addEditor({{flashset.id}})">Add editor</button>
+                                    </div>
+                                    <div id="editorList">
+                                        {% for editor in flashset.editors.all %}
+                                            {% if editor == flashset.creator %}
+                                                <div class="flashcard container-fluid mt-2" id="editorList-{{editor.id}}">
+                                                    <div class="row justify-content-between">
+                                                        <span class="w-auto mt-2 dynamic-font-size-small">{{editor.username}}</span>
+                                                        <button type="button" class="w-auto py-0 my-2 me-2 btn btn-custom-danger dynamic-font-size-small" disabled>Remove</button>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <div class="flashcard container-fluid mt-2" id="editorList-{{editor.id}}">
+                                                    <div class="row justify-content-between">
+                                                        <span class="w-auto mt-2 dynamic-font-size-small">{{editor.username}}</span>
+                                                        <button type="button" class="w-auto py-0 my-2 me-2 btn btn-custom-danger dynamic-font-size-small" onclick="deleteEditor({{flashset.id}}, {{editor.id}})">Remove</button>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-custom-blue" data-bs-dismiss="modal">Back</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-custom-danger mb-1" data-bs-toggle="modal" data-bs-target="#deleteFlashsetConfirmation">Delete Set</button>
+                    <div class="modal fade" id="deleteFlashsetConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <span class="modal-title dynamic-font-size-small">Are you sure you would like to delete this set?</span>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form method="post" action="{% url 'set' set_id=flashset.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="deleteFlashset" name="action">
+                                        <button type="submit" class="btn btn-danger" id="deleteFlashsetConfirmationButton">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% for flashcard in flashcards %}
+            <div style="color:currentColor; text-decoration:none;" class="container-fluid my-2 flashcard" id="flashcard-{{flashcard.id}}">
+                <div class="row my-3">
+                    <div class="col-auto">
+                        <img src="{{flashcard.imageURL}}" id="flashcard-image-{{flashcard.id}}" style="object-fit:contain; max-height:200px; max-width:400px;">
+                    </div>
+                    <div class="col-auto">
+                        <div class="d-block" id="flashcard-base-{{flashcard.id}}">
+                            <h2><strong id="flashcard-front-{{flashcard.id}}">{{flashcard.front}}</strong></h2>
+                            <h4 id="flashcard-back-{{flashcard.id}}">{{flashcard.back}}</h4>
+                            <h6 id="flashcard-username-{{flashcard.id}}">Created by: {{flashcard.creator.username}}</h6>
+                        </div>
+                        <div class="d-none" id="flashcard-edit-form-{{flashcard.id}}">
+                            <div class="mb-2">
+                                <span class="form-label" for="createFlashcardFrontForm">Front side:</label>
+                                <input type="text" name="front" class="form-control input-blue" id="flashcard-edit-front-{{flashcard.id}}" value="{{flashcard.front}}">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="createFlashcardBackForm">Back side:</label>
+                                <input type="text" name="back" class="form-control input-blue" id="flashcard-edit-back-{{flashcard.id}}" value="{{flashcard.back}}">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="createFlashcardImageURLForm">Image URL: (optional)</label>
+                                <input type="url" name="imageURL" class="form-control input-blue" id="flashcard-edit-imageURL-{{flashcard.id}}" value="{{flashcard.imageURL}}">
+                            </div>
+                            <button type="button" class="btn btn-primary dynamic-font-size-medium" onclick="saveFlashcardEdit({{flashcard.id}}, {{flashset.id}})">Save Changes</button>
+                        </div>
+                    </div>
+                    {% if user in flashset.editors.all %}
+                        <div class="col-auto ms-auto me-4 d-flex flex-column">
+                            <div class="row align-items-start justify-content-end mb-auto mt-2">
+                                <button type="button" class="btn btn-primary dynamic-font-size-medium" onclick="displayEditFlashcard({{flashcard.id}}, {{flashset.id}})">Edit</button>
+                            </div>
+                            <div class="row align-items-end justify-content-end mb-2 mt-3">
+                                <button type="button" class="btn btn-custom-danger" onclick="deleteFlashcard({{flashcard.id}}, {{flashset.id}})">Delete</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>  
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

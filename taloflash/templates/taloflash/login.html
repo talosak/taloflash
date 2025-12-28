@@ -1,0 +1,23 @@
+{% extends "taloflash/layout.html" %}
+
+{% block title %} Log In {% endblock %}
+
+{% block script %}{% endblock %}
+
+{% block body %}
+    <div class="container-lg">
+        <h2>Log In</h2>
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label" for="loginUsernameForm">Username:</label>
+                <input type="text" name="username" class="form-control input-blue" id="loginUsernameForm" autocomplete="off">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="loginPasswordForm">Password:</label>
+                <input type="password" name="password" class="form-control input-blue" id="loginPasswordForm" autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-custom-blue">Log In</button>
+        </form>
+    </div>
+{% endblock %}

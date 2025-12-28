@@ -1,0 +1,51 @@
+{% extends "taloflash/layout.html" %}
+{% load static %}
+
+{% block title %} Study {% endblock %}
+
+{% block script %}
+    <script src=" https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js "></script>
+    <script defer src="{% static 'taloflash/study.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    {{ user.settings.serialize|json_script:"settings-data" }}
+    {% csrf_token %}
+    <div class="container-lg">
+        <div id="flashcardFront" class="flashcard {% if user.settings.backToForwardMode %} d-none {% endif %}" style="height:80vh">
+            <div class="row text-center mt-3 mb-4"><span class="font-size-study" id="studyFlashcardFrontText">Front placeholder</span></div>    
+            <div class="row justify-content-center mb-5"><img class="d-block object-fit-contain" style="max-height:50vh; max-width:45vw;" id="studyFlashcardFrontImageURL" src="https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"></div>
+            <div class="row justify-content-center mt-5">
+                {% if user.settings.backToForwardMode %}
+                    <button type="button" class="col-4 col-lg-2 me-2 btn btn-custom-blue" id="learnedButton" disabled>I knew</button>
+                    <button type="button" class="col-4 col-lg-2 ms-2 btn btn-custom-danger" id="notLearnedButton" disabled>I didn't know</button>
+                {% else %}
+                    <button type="button" class="col-4 btn btn-custom-blue" onclick="flip(settings.postFlipCooldown)">Show answer</button>
+                {% endif %}
+            </div>
+        </div>
+        <div id="flashcardBack" class="flashcard {% if not user.settings.backToForwardMode %} d-none {% endif %}" style="height:80vh">
+            <div class="row text-center mt-3 mb-4"><span class="font-size-study" id="studyFlashcardBackText">Back placeholder</span></div>    
+            <div class="row justify-content-center"><img style="display:block; object-fit:contain; max-height:50vh; max-width:45vw;" id="studyFlashcardBackImageURL" src="https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"></div>
+            <div class="row justify-content-center mt-5">
+                {% if user.settings.backToForwardMode %}
+                    <button type="button" class="col-4 btn btn-custom-blue" onclick="flip(settings.postFlipCooldown)">Show answer</button>
+                {% else %}
+                    <button type="button" class="col-4 col-lg-2 me-2 btn btn-custom-blue" id="learnedButton" disabled>I knew</button>
+                    <button type="button" class="col-4 col-lg-2 ms-2 btn btn-custom-danger" id="notLearnedButton" disabled>I didn't know</button>
+                {% endif %}
+            </div>
+        </div>
+        <div id="studyResults" class="flashcard d-none" style="height:80vh">
+            <div class="row text-center mt-3 mb-4 font-size-study"><strong><span style="color:limegreen;">Flashset completed :3</span></strong></div>
+            <div class="row justify-content-center"><img style="display:block; object-fit:contain; max-height:50vh; max-width:45vw;" id="studyFlashcardBackImageURL" src="https://static.wikia.nocookie.net/silly-cat/images/1/19/Thumbs_Up.png/revision/latest?cb=20231201204731"></div>
+            <div class="row text-center mt-3 mb-4 dynamic-font-size-big"><strong><span id="studyAccuracy">Accuracy: 0/0 (~0%)</span></strong></div>
+        </div>
+        <div class="mt-3 d-flex justify-content-between">
+            {% if user.is_authenticated and user.settings.showTimer %}
+                <span id="studyTimer">Timer: 00:00:00:00</span>
+            {% endif %}
+            <span class="ms-auto" id="learnedFlashcards">Flashcards learned: 0/0</span>
+        </div>
+    </div>
+{% endblock %}
