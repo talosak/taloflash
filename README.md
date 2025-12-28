@@ -21,7 +21,7 @@
 3. Download [Git](https://git-scm.com/)
 4. Open VSCode and download the python extension
 5. Create a terminal using the Git Bash
-6. Install django
+6. Install django (use 'python3' if 'python' doesn't work)
     ```bash
     python -m pip install django
     ```
@@ -47,7 +47,51 @@
 
 ## Self-hosting
 #### This part is mostly for me to remember how to self host, the files mentioned aren't publically available.
-1. TBA
+1. Install python, pip, git, curl, sqlite3
+	```bash
+	sudo apt install python3 python3-pip git curl sqlite3
+	```
+2. Install docker
+	```bash
+	curl -fsSL https://get.docker.com -o get-docker.sh
+	sudo sh get-docker.sh
+	```
+3. There are now two options: (A) is building from source which allows you to edit source code, (B) is building from a docker image which is easier and more consistent but doesnt allow editing source code
+* (A) Clone the dev repo and cd into it
+	```bash
+	git clone <link to dev repo> ~/path/to/repo
+	cd ~/path/to/repo
+	```
+* (B) Pull from docker:
+	```bash
+	docker pull talosak/taloflash:latest
+	```
+4. Keep doing either (A) or (B) respectively
+* (A) Install the dependencies from requirements.txt
+	```bash
+	sudo apt install python3-django
+	sudo apt install python3-dotenv
+	sudo apt install python3-gunicorn
+	sudo apt isntall python3-sqlparse
+	```
+* (B) Copy the files and folders: docker-compose.yml, .env, nginx, cloudflared, db_data from private repo
+5. Near the top of the file "docker-compose.yml", there are two lines labeled "Not docker(A)" or "Docker(B)", make sure to uncomment the line with your letter(but do not uncomment the label itself), and comment the one with the other letter
+	```bash
+	cat docker-compose.yml
+	```
+6. Inside the file ".env", uncomment the lines under what you want to do, and comment the ones under the other option (Development or Production)
+	```bash
+	cat .env
+	```
+7. Run the web application
+	```bash
+	docker compose up --build
+	```
+8. Pray to whatever deity you worship for it to work
+9. Stop it with
+	```bash
+	docker compose down -v	
+	```
 
 # Documentation
 ### This is the part of the README where i go into detail about all the files and features.
